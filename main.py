@@ -35,7 +35,7 @@ task-cli list todo
 task-cli list in-progress
 """
 ACTIONS = ["add","update","delete","list","mark-in-progress","mark-done"]
-
+print(BASE_DIR)
 
 def fileIsEmpty():
     try:
@@ -221,33 +221,36 @@ if not "data.json" in files:
     file.close()
 
 # make sure actions args is in ACTIONS list
-if sys.argv[1] in ACTIONS:
-    action = sys.argv[1]
-    if action == "add" and len(sys.argv) == 3:
-        output = addData()
+try:
+    if sys.argv[1] in ACTIONS:
+        action = sys.argv[1]
+        if action == "add" and len(sys.argv) == 3:
+            output = addData()
 
-    elif action  == "update" and len(sys.argv) == 4:
-       output = updateData()
-    
-    elif action  == "delete" and len(sys.argv) == 3:
-        output = deleteData()
+        elif action  == "update" and len(sys.argv) == 4:
+            output = updateData()
+        
+        elif action  == "delete" and len(sys.argv) == 3:
+            output = deleteData()
 
-    elif action  == "list":
-        if len(sys.argv) == 2:
-            output = listData()
-        elif len(sys.argv) == 3:
-            output = fileStatus()
+        elif action  == "list":
+            if len(sys.argv) == 2:
+                output = listData()
+            elif len(sys.argv) == 3:
+                output = fileStatus()
 
 
-    # print("....")
+        # print("....")
 
-    elif action  == "mark-in-progress" and len(sys.argv) == 3:
-        output = markInProgress()
-                
-    elif action  == "mark-done":
-        output = markDone()
+        elif action  == "mark-in-progress" and len(sys.argv) == 3:
+            output = markInProgress()
+                    
+        elif action  == "mark-done":
+            output = markDone()
 
-else:
+    else:
+        print(HELP)
+except:
     print(HELP)
     # if sys.argv[1]  ==  "add" and sys.argv[2] != None:
     #     # check the next args to be a string

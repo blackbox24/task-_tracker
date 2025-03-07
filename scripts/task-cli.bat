@@ -1,6 +1,8 @@
 @echo off
 
-py ./../main.py %1 %2 %3
+set mypath=%~dp0
+@echo %mypath%
+python %mypath%/../main.py %1 %2 %3
 @REM  task-cli   [action] [description]
 @REM  task-cli   [action] [index] [description]
 @REM  task-cli   [action] [index]
