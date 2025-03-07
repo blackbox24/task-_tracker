@@ -10,8 +10,31 @@ DATA_DIR = f"{BASE_DIR}\\..\\data"
 DATA_DIR_FILE = f"{BASE_DIR}\\..\\data\\data.json"
 ROOT_DIR = f"{BASE_DIR}\\..\\"
 ID = 0
+HELP = """
+HELP DOCS 
+COMMAND [ACTION ] [INDEX] [OPTION]
 
-ACTIONS = ["add","update","delete","list"," mark-in-progress","mark-done"]
+# Adding a new task
+task-cli add "Buy groceries"
+# Output: Task added successfully (ID: 1)
+
+# Updating and deleting tasks
+task-cli update 1 "Buy groceries and cook dinner"
+task-cli delete 1
+
+# Marking a task as in progress or done
+task-cli mark-in-progress 1
+task-cli mark-done 1
+
+# Listing all tasks
+task-cli list
+
+# Listing tasks by status
+task-cli list done
+task-cli list todo
+task-cli list in-progress
+"""
+ACTIONS = ["add","update","delete","list","mark-in-progress","mark-done"]
 
 
 def fileIsEmpty():
@@ -19,7 +42,7 @@ def fileIsEmpty():
         with open(DATA_DIR_FILE,"r") as f:
             file = json.loads(f.read())
             return False
-    except:
+    except json.decoder.JSONDecodeError as e:
         return True
 
 def generateID():
@@ -92,7 +115,7 @@ def listData():
             file = json.loads(f.read())
             for i in file:
                     print(i)
-    except:
+    except json.decoder.JSONDecodeError as e:
         print("File is empty")
 
     return 0
@@ -116,10 +139,74 @@ def deleteData():
     except ValueError:
         print("Invalid index")
 
-    except:
+    except json.decoder.JSONDecodeError as e:
         print("File is empty")
     
     return 0
+
+def markInProgress():
+    try:
+        index = int(sys.argv[2])
+        with open(DATA_DIR_FILE,"r+") as f:
+            file = json.loads(f.read())
+            for i in range(len(file)):
+                if file[i]["id"] == index:
+                    file[i]["status"] = "in-progress"
+                    f.seek(0)
+                    f.truncate()
+                    json.dump(file,f)
+                    print("Task %i marked as in-progress" %file[i]["id"])
+                    break
+
+                elif file[i]["id"] != index and i == len(file) - 1:
+                    print("Index cannot be found")
+
+    except ValueError as e:
+        print("Invalid index ",e)
+    
+    except json.decoder.JSONDecodeError as e:
+        print("File is empty")
+    return 0
+
+def markDone():
+    try:
+        index = int(sys.argv[2])
+        with open(DATA_DIR_FILE,"r+") as f:
+            file = json.loads(f.read())
+            for i in range(len(file)):
+                if file[i]["id"] == index:
+                    file[i]["status"] = "done"
+                    f.seek(0)
+                    f.truncate()
+                    json.dump(file,f)
+                    print("Task %i marked as done" %file[i]["id"])
+                    break
+
+                elif file[i]["id"] != index and i == len(file) - 1:
+                    print("Index cannot be found")
+
+    except ValueError as e:
+        print("Invalid index ",e)
+    
+    except json.decoder.JSONDecodeError as e:
+        print("File is empty")
+    return 0
+
+
+def fileStatus():
+    try:
+        with open(DATA_DIR_FILE,"r+") as f:
+            file = json.loads(f.read())
+            ids = 0
+            for i in range(len(file)):
+                if file[i]["status"] == sys.argv[2]:
+                    print(file[i])
+                    ids += 1
+                elif file[i]["status"] != sys.argv[2] and i == len(file) - 1 and ids <= 0:
+                    print("%s Status cannot be found"  %sys.argv[2])
+                        
+    except json.decoder.JSONDecodeError as e:
+        print("File is empty\n",e)
 
 if not os.path.isdir(DATA_DIR):
     os.chdir(ROOT_DIR)
@@ -146,16 +233,22 @@ if sys.argv[1] in ACTIONS:
         output = deleteData()
 
     elif action  == "list":
-        output = listData()
+        if len(sys.argv) == 2:
+            output = listData()
+        elif len(sys.argv) == 3:
+            output = fileStatus()
 
-    elif action  == "mark-in-progress":
-        updateData()
-    
+
+    # print("....")
+
+    elif action  == "mark-in-progress" and len(sys.argv) == 3:
+        output = markInProgress()
+                
     elif action  == "mark-done":
-        updateData()
+        output = markDone()
 
 else:
-    print("Invalid command")
+    print(HELP)
     # if sys.argv[1]  ==  "add" and sys.argv[2] != None:
     #     # check the next args to be a string
     #     with open(DATA_DIR_FILE,mode="w+") as f:
