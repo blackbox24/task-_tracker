@@ -96,6 +96,31 @@ def listData():
         print("File is empty")
 
     return 0
+
+def deleteData():
+    try:
+        index = int(sys.argv[2])
+        with open(DATA_DIR_FILE,"r+") as f:
+            # id exists
+            file = json.loads(f.read())
+            for i in range(len(file)):
+                if file[i]["id"] == index:
+                    file.remove(file[i])
+                    f.seek(0)
+                    f.truncate()
+                    json.dump(file,f)
+                    break
+                elif file[i]["id"] != index and i == len(file) -1:
+                    print("Index cannot be found")
+                    
+    except ValueError:
+        print("Invalid index")
+
+    except:
+        print("File is empty")
+    
+    return 0
+
 if not os.path.isdir(DATA_DIR):
     os.chdir(ROOT_DIR)
     os.mkdir(DATA_DIR)
@@ -118,17 +143,7 @@ if sys.argv[1] in ACTIONS:
        output = updateData()
     
     elif action  == "delete" and len(sys.argv) == 3:
-        
-        try:
-            index = int(sys.argv[2])
-            with open(DATA_DIR_FILE,"r+") as f:
-                # id exists
-                file = json.loads(f.read())
-                for i in range(len(file)):
-                    if file[i]["id"] == sys.argv[2]:
-                        pass
-        except:
-            print("File is empty")
+        output = deleteData()
 
     elif action  == "list":
         output = listData()
