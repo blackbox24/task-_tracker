@@ -69,6 +69,7 @@ def addData():
                 }
             ]
             file = json.dump(data,f)
+            print("Task added successfully (ID: %i)" %ID)
     else:
         with open(DATA_DIR_FILE,"r+") as f:
             prev_data = json.loads(f.read())
@@ -217,7 +218,6 @@ files = os.listdir(DATA_DIR)
 
 if not "data.json" in files:
     file = open(DATA_DIR+"\\data.json",mode="w")
-    file.write("{}")
     file.close()
 
 # make sure actions args is in ACTIONS list
