@@ -10,7 +10,7 @@
 ### HOW TO USE THIS APP
 - Clone this repo onto your local machine
     
-- Type `git clone https://github.com/blackbox24/task-_tracker.git` in your terminal
+- Type `git clone https://github.com/blackbox24/task_tracker.git` in your terminal
 
 - Set task-cli.bat as a path in your environmental variable
 
